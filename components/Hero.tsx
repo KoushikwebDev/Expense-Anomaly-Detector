@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle2, FileText, ShieldCheck, Bell, Database } from "lucide-react";
+import { uploadCompanyPolicy } from "@/app/actions/uploadPolicy";
 
 export default function Hero() {
   const containerVariants = {
@@ -48,13 +49,20 @@ export default function Hero() {
             <br />
             Detector
           </motion.h1>
-          
+
           <motion.p variants={itemVariants} className="text-xl text-gray-600 dark:text-gray-400 mb-8 max-w-2xl mx-auto lg:mx-0">
             AI-powered reimbursement validation. Detect anomalies, automate approvals, and streamline your expense workflow.
           </motion.p>
 
           <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-            <button className="group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-blue-600 to-purple-600 px-8 font-medium text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-900 cursor-pointer">
+            <button
+              onClick={async () => {
+                console.log('Uploading policy...');
+                const result = await uploadCompanyPolicy(new FormData());
+                console.log('Upload result:', result);
+              }}
+              className="group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-blue-600 to-purple-600 px-8 font-medium text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-900 cursor-pointer"
+            >
               <span className="relative z-10 mr-2">Try It</span>
               <ArrowRight className="relative z-10 h-4 w-4 transition-transform group-hover:translate-x-1" />
               <div className="absolute inset-0 -z-0 bg-gradient-to-r from-purple-600 to-blue-600 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
@@ -65,17 +73,17 @@ export default function Hero() {
           </motion.div>
 
           <motion.div variants={itemVariants} className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
-             {[
-                { icon: FileText, text: "OCR Receipt Validation" },
-                { icon: ShieldCheck, text: "Policy Compliance Check" },
-                { icon: Bell, text: "Smart Notifications" },
-                { icon: Database, text: "Auto-Update Sheets" }
-             ].map((feature, index) => (
-                <div key={index} className="flex items-center space-x-3 text-gray-700 dark:text-gray-300">
-                  <feature.icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                  <span className="text-sm">{feature.text}</span>
-                </div>
-             ))}
+            {[
+              { icon: FileText, text: "OCR Receipt Validation" },
+              { icon: ShieldCheck, text: "Policy Compliance Check" },
+              { icon: Bell, text: "Smart Notifications" },
+              { icon: Database, text: "Auto-Update Sheets" }
+            ].map((feature, index) => (
+              <div key={index} className="flex items-center space-x-3 text-gray-700 dark:text-gray-300">
+                <feature.icon className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                <span className="text-sm">{feature.text}</span>
+              </div>
+            ))}
           </motion.div>
         </motion.div>
 
@@ -85,62 +93,62 @@ export default function Hero() {
           transition={{ duration: 0.8, delay: 0.2 }}
           className="lg:w-1/2 relative"
         >
-           {/* Abstract UI Representation */}
-           <div className="relative rounded-2xl border border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl p-6 shadow-2xl">
-              <div className="flex items-center space-x-2 mb-4">
-                <div className="h-3 w-3 rounded-full bg-red-500" />
-                <div className="h-3 w-3 rounded-full bg-yellow-500" />
-                <div className="h-3 w-3 rounded-full bg-green-500" />
-              </div>
-              
-              <div className="space-y-4">
-                <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50">
-                   <div className="flex items-center space-x-3">
-                      <div className="h-10 w-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
-                        <FileText size={20} />
-                      </div>
-                      <div>
-                        <div className="h-2 w-24 bg-gray-200 dark:bg-gray-700 rounded mb-2" />
-                        <div className="h-2 w-16 bg-gray-300 dark:bg-gray-800 rounded" />
-                      </div>
-                   </div>
-                   <div className="h-6 w-16 bg-green-500/20 rounded-full flex items-center justify-center text-xs text-green-600 dark:text-green-400">
-                      Approved
-                   </div>
-                </div>
+          {/* Abstract UI Representation */}
+          <div className="relative rounded-2xl border border-gray-200 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl p-6 shadow-2xl">
+            <div className="flex items-center space-x-2 mb-4">
+              <div className="h-3 w-3 rounded-full bg-red-500" />
+              <div className="h-3 w-3 rounded-full bg-yellow-500" />
+              <div className="h-3 w-3 rounded-full bg-green-500" />
+            </div>
 
-                <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-red-500/30 relative overflow-hidden">
-                   <div className="absolute inset-0 bg-red-500/5 animate-pulse" />
-                   <div className="flex items-center space-x-3 z-10">
-                      <div className="h-10 w-10 rounded-full bg-red-500/20 flex items-center justify-center text-red-600 dark:text-red-400">
-                        <ShieldCheck size={20} />
-                      </div>
-                      <div>
-                        <div className="h-2 w-24 bg-gray-200 dark:bg-gray-700 rounded mb-2" />
-                        <div className="h-2 w-16 bg-gray-300 dark:bg-gray-800 rounded" />
-                      </div>
-                   </div>
-                   <div className="h-6 w-20 bg-red-500/20 rounded-full flex items-center justify-center text-xs text-red-600 dark:text-red-400 z-10">
-                      Anomaly
-                   </div>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50">
+                <div className="flex items-center space-x-3">
+                  <div className="h-10 w-10 rounded-full bg-blue-500/20 flex items-center justify-center text-blue-600 dark:text-blue-400">
+                    <FileText size={20} />
+                  </div>
+                  <div>
+                    <div className="h-2 w-24 bg-gray-200 dark:bg-gray-700 rounded mb-2" />
+                    <div className="h-2 w-16 bg-gray-300 dark:bg-gray-800 rounded" />
+                  </div>
                 </div>
-
-                <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50">
-                   <div className="flex items-center space-x-3">
-                      <div className="h-10 w-10 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-600 dark:text-purple-400">
-                        <Bell size={20} />
-                      </div>
-                      <div>
-                        <div className="h-2 w-24 bg-gray-200 dark:bg-gray-700 rounded mb-2" />
-                        <div className="h-2 w-16 bg-gray-300 dark:bg-gray-800 rounded" />
-                      </div>
-                   </div>
-                   <div className="h-6 w-16 bg-yellow-500/20 rounded-full flex items-center justify-center text-xs text-yellow-600 dark:text-yellow-400">
-                      Pending
-                   </div>
+                <div className="h-6 w-16 bg-green-500/20 rounded-full flex items-center justify-center text-xs text-green-600 dark:text-green-400">
+                  Approved
                 </div>
               </div>
-           </div>
+
+              <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-red-500/30 relative overflow-hidden">
+                <div className="absolute inset-0 bg-red-500/5 animate-pulse" />
+                <div className="flex items-center space-x-3 z-10">
+                  <div className="h-10 w-10 rounded-full bg-red-500/20 flex items-center justify-center text-red-600 dark:text-red-400">
+                    <ShieldCheck size={20} />
+                  </div>
+                  <div>
+                    <div className="h-2 w-24 bg-gray-200 dark:bg-gray-700 rounded mb-2" />
+                    <div className="h-2 w-16 bg-gray-300 dark:bg-gray-800 rounded" />
+                  </div>
+                </div>
+                <div className="h-6 w-20 bg-red-500/20 rounded-full flex items-center justify-center text-xs text-red-600 dark:text-red-400 z-10">
+                  Anomaly
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700/50">
+                <div className="flex items-center space-x-3">
+                  <div className="h-10 w-10 rounded-full bg-purple-500/20 flex items-center justify-center text-purple-600 dark:text-purple-400">
+                    <Bell size={20} />
+                  </div>
+                  <div>
+                    <div className="h-2 w-24 bg-gray-200 dark:bg-gray-700 rounded mb-2" />
+                    <div className="h-2 w-16 bg-gray-300 dark:bg-gray-800 rounded" />
+                  </div>
+                </div>
+                <div className="h-6 w-16 bg-yellow-500/20 rounded-full flex items-center justify-center text-xs text-yellow-600 dark:text-yellow-400">
+                  Pending
+                </div>
+              </div>
+            </div>
+          </div>
         </motion.div>
       </div>
     </div>
