@@ -6,8 +6,8 @@ export async function createServerSupabaseClient() {
     const cookieStore = await cookies();
 
     return createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        process.env.NEXT_APP_SUPABASE_URL!,
+        process.env.NEXT_APP_SUPABASE_API_KEY!,
         {
             cookies: {
                 getAll() {
@@ -31,8 +31,8 @@ export async function createServerSupabaseClient() {
 // Admin client with service role (bypasses RLS)
 export function createAdminClient() {
     return createClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.SUPABASE_SERVICE_ROLE_KEY!
+        process.env.NEXT_APP_SUPABASE_URL!,
+        process.env.NEXT_APP_SUPABASE_SERVICE_ROLE_KEY!
     );
 }
 

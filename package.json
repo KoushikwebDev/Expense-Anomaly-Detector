@@ -9,9 +9,12 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@langchain/community": "^1.1.1",
+    "@langchain/core": "^1.1.8",
     "@langchain/textsplitters": "^1.0.1",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.89.0",
+    "canvas": "^3.2.0",
     "clsx": "^2.1.1",
     "framer-motion": "^12.23.24",
     "lucide-react": "^0.554.0",
@@ -19,7 +22,8 @@
     "next": "16.0.3",
     "next-themes": "^0.4.6",
     "openai": "^6.15.0",
-    "pdf-parse": "^2.4.5",
+    "pdf-parse": "^1.1.4",
+    "pdfjs-dist": "^3.6.172",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "tailwind-merge": "^3.4.0",
