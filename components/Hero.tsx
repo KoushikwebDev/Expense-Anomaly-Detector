@@ -27,7 +27,7 @@ export default function Hero() {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center overflow-hidden text-foreground pt-16">
+    <div className="relative min-h-screen flex items-center justify-center overflow-hidden text-foreground pt-24 md:pt-16">
       {/* Background Animation */}
       <div className="absolute inset-0 z-0">
         <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-purple-600/20 dark:bg-purple-600/20 blur-[100px] animate-pulse" />
