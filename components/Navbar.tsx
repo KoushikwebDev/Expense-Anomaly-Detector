@@ -29,9 +29,9 @@ export default function Navbar() {
   };
 
   const navItems = [
-    { name: "Features", href: "#features" },
-    { name: "How it Works", href: "#how-it-works" },
-    { name: "Pricing", href: "#pricing" },
+    { name: "Features", href: "/features" },
+    { name: "How it Works", href: "/how-it-works" },
+    { name: "Pricing", href: "/pricing" },
   ];
 
   if (!mounted) return null;
@@ -110,9 +110,12 @@ export default function Navbar() {
               >
                 {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
               </button>
-              <button className="px-4 py-2 rounded-full bg-black dark:bg-white text-white dark:text-black text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-all hover:scale-105 active:scale-95">
+              <Link 
+                href="/anomaly-detector"
+                className="px-4 py-2 rounded-full bg-black dark:bg-white text-white dark:text-black text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-all hover:scale-105 active:scale-95"
+              >
                 Get Started
-              </button>
+              </Link>
             </div>
 
             {/* Mobile Menu Button */}
@@ -156,9 +159,13 @@ export default function Navbar() {
                 </Link>
               ))}
               <div className="pt-2 border-t border-gray-200 dark:border-gray-800 mt-2">
-                <button className="w-full py-3 rounded-xl bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors">
+                <Link 
+                  href="/anomaly-detector"
+                  onClick={() => setIsOpen(false)}
+                  className="block w-full py-3 rounded-xl bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-center"
+                >
                   Get Started
-                </button>
+                </Link>
               </div>
             </div>
           </motion.div>
