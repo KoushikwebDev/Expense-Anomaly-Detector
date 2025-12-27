@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle2, FileText, ShieldCheck, Bell, Database } from "lucide-react";
-import { uploadCompanyPolicy } from "@/app/actions/uploadPolicy";
+import Link from "next/link";
 
 export default function Hero() {
   const containerVariants = {
@@ -55,21 +55,20 @@ export default function Hero() {
           </motion.p>
 
           <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-            <button
-              onClick={async () => {
-                console.log('Uploading policy...');
-                const result = await uploadCompanyPolicy(new FormData());
-                console.log('Upload result:', result);
-              }}
-              className="group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-blue-600 to-purple-600 px-8 font-medium text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-900 cursor-pointer"
+            <Link
+              href="/anomaly-detector"
+              className="group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-blue-600 to-purple-600 px-8 font-medium text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-900"
             >
-              <span className="relative z-10 mr-2">Try It</span>
+              <span className="relative z-10 mr-2">Try It Now</span>
               <ArrowRight className="relative z-10 h-4 w-4 transition-transform group-hover:translate-x-1" />
               <div className="absolute inset-0 -z-0 bg-gradient-to-r from-purple-600 to-blue-600 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-            </button>
-            <button className="inline-flex h-12 items-center justify-center rounded-full border border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-900/50 px-8 font-medium text-gray-700 dark:text-gray-300 backdrop-blur-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-black dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-slate-900">
+            </Link>
+            <Link 
+              href="/how-it-works"
+              className="inline-flex h-12 items-center justify-center rounded-full border border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-900/50 px-8 font-medium text-gray-700 dark:text-gray-300 backdrop-blur-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-black dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-slate-900"
+            >
               Learn More
-            </button>
+            </Link>
           </motion.div>
 
           <motion.div variants={itemVariants} className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-4 text-left">
