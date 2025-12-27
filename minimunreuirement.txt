@@ -1,0 +1,128 @@
+1️⃣ Merchant / Vendor Details
+
+Mandatory hota hi hota hai:
+
+Merchant / Vendor Name
+
+Merchant Address (city/state at least)
+
+Contact info (phone/email – optional but preferred)
+
+2️⃣ Invoice Identification
+
+Invoice Number (unique)
+
+Invoice Date
+
+📌 Date bahut critical hoti hai (expense validity, 30-day rule, audit)
+
+3️⃣ Buyer / Customer Details
+
+Minimum:
+
+Employee / Company Name
+
+Optional but good:
+
+Employee ID
+
+Company name (TechVision Solutions, etc.)
+
+4️⃣ Transaction Details
+
+Mandatory:
+
+Description of goods / service
+
+e.g. Domestic flight ticket, Hotel accommodation, Client dinner
+
+Amount paid
+
+Currency (₹ / USD / etc.)
+
+5️⃣ Tax Details (Very Important)
+
+Depends on case:
+
+🟢 Non-GST / Small vendors
+
+Total amount is enough
+
+🟢 GST Invoice (India)
+
+Mandatory:
+
+GSTIN of vendor
+
+Tax breakup
+
+CGST / SGST / IGST
+
+Taxable value
+
+Total GST amount
+
+📌 Without GST breakup → Input tax credit not allowed
+
+6️⃣ Payment Proof
+
+At least one of:
+
+Paid stamp
+
+Transaction ID
+
+Mode of payment (Cash / Card / UPI)
+
+✈️ Travel-specific Minimum Fields
+Flight Invoice
+
+Must have:
+
+Passenger name
+
+From → To
+
+Date of travel
+
+Fare + taxes
+
+Ticket / PNR number
+
+Hotel Invoice
+
+Must have:
+
+Guest name
+
+Check-in & Check-out date
+
+City
+
+Room charges
+
+Total amount
+
+🍽️ Meal / Entertainment Invoice
+
+Minimum:
+
+Restaurant name
+
+Date
+
+Amount
+
+Item description (optional but preferred)
+
+❌ Invoice will be REJECTED if:
+
+No date
+
+No merchant name
+
+Handwritten without stamp/signature
+
+Amount mismatch with claim
+
+Fake / altered invoice
