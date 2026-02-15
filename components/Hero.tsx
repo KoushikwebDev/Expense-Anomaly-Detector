@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { ArrowRight, CheckCircle2, FileText, ShieldCheck, Bell, Database } from "lucide-react";
-import { uploadCompanyPolicy } from "@/app/actions/uploadPolicy";
+import { useRouter } from "next/navigation";
 
 export default function Hero() {
   const containerVariants = {
@@ -25,6 +25,8 @@ export default function Hero() {
       },
     },
   };
+
+  const router = useRouter();
 
   return (
     <div className="relative min-h-screen flex items-center justify-center overflow-hidden text-foreground pt-16">
@@ -56,11 +58,7 @@ export default function Hero() {
 
           <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
             <button
-              onClick={async () => {
-                console.log('Uploading policy...');
-                const result = await uploadCompanyPolicy(new FormData());
-                console.log('Upload result:', result);
-              }}
+              onClick={() => router.push('/upload')}
               className="group relative inline-flex h-12 items-center justify-center overflow-hidden rounded-full bg-gradient-to-r from-blue-600 to-purple-600 px-8 font-medium text-white transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-slate-900 cursor-pointer"
             >
               <span className="relative z-10 mr-2">Try It</span>
