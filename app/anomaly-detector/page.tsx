@@ -159,14 +159,14 @@ export default function AnomalyDetectorPage() {
                         animate={{ opacity: 1, y: 0 }}
                         className="text-center mb-12"
                     >
-                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-300 text-sm font-medium mb-4">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-600 dark:text-orange-300 text-sm font-medium mb-4">
                             <Shield className="w-4 h-4" />
                             <span>AI-Powered Invoice Analysis</span>
                         </div>
-                        <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 bg-clip-text text-transparent bg-linear-to-r from-white via-orange-200 to-orange-400">
+                        <h1 className="text-4xl md:text-5xl font-bold tracking-tight mb-4 bg-clip-text text-transparent bg-linear-to-r from-gray-900 via-orange-600 to-orange-500 dark:from-white dark:via-orange-200 dark:to-orange-400">
                             Anomaly Detector
                         </h1>
-                        <p className="text-lg text-muted-foreground w-full max-w-xl mx-auto">
+                        <p className="text-lg text-gray-600 dark:text-muted-foreground w-full max-w-xl mx-auto">
                             Upload invoices to validate, detect anomalies, and check policy compliance using AI agents.
                         </p>
                     </motion.div>
