@@ -12,6 +12,8 @@ import {
     type ValidationResult,
     type PolicyCompliance,
 } from '@/lib/schemas/invoice';
+import { logInvoiceAction } from '@/lib/excel';
+
 
 // ============================================
 // OPENAI CLIENT SETUP
@@ -120,34 +122,30 @@ const validationAgent = new Agent({
     model: 'gpt-4o',
     instructions: `You are an Invoice Validation Agent. Your job is to extract and validate invoice data.
 
+CRITICAL: You MUST find the TOTAL AMOUNT to be paid (Grand Total).
+Look for:
+- "Grand Total"
+- "Total Amount"
+- "Amount Due"
+- "Net Payable"
+- "Balance Paid"
+- "Total" (usually at the very bottom)
+
 MANDATORY FIELDS that MUST be present:
 1. Merchant/Vendor Name
-2. Merchant Address (at least city/state)
-3. Invoice Number (unique identifier)
+2. Merchant Address
+3. Invoice Number
 4. Invoice Date
 5. Description of goods/service
-6. Amount paid
-7. Currency
+6. Grand Total Expense (The final, total amount including taxes. Return ONLY numeric digits and decimal. e.g. 1250.75)
+7. Currency (Short format like INR, USD)
 
-CONDITIONAL MANDATORY FIELDS:
-- For GST invoices: GSTIN, Tax breakup (CGST/SGST/IGST)
-- For Flight: Passenger name, From-To, Travel date, PNR
-- For Hotel: Guest name, Check-in/out dates, City
-- For Meals: Restaurant name, Date, Amount
-
-REJECTION CRITERIA:
-- No date
-- No merchant name
-- Handwritten without stamp/signature
-- Amount mismatch
-- Fake/altered appearance
-
-Extract all available fields and identify what's missing. Return a JSON object with:
-- is_valid: boolean
-- extracted_fields: object with all invoice fields
-- missing_mandatory_fields: array of missing field names
-- validation_errors: array of error messages
-- confidence_score: 0-100 confidence in extraction accuracy`,
+Format your response as a JSON object with exactly these fields:
+- is_valid: boolean (true if all mandatory fields found)
+- extracted_fields: { merchant_name, merchant_address, invoice_number, invoice_date, description, amount, currency }
+- missing_mandatory_fields: array of strings (names of fields not found)
+- validation_errors: array of strings
+- confidence_score: number 0-100`,
     tools: [extractImageTextTool],
 });
 
@@ -194,12 +192,12 @@ export async function analyzeInvoice(formData: FormData): Promise<FinalAnalysis>
     console.log('📄 Step 1: Running Validation Agent...');
 
     // Run Validation Agent
-    const validationResult = await run(validationAgent, `Analyze this invoice and extract all fields. Identify missing mandatory fields.
+    const validationResult = await run(validationAgent, `MANDATORY: Extract the EXACT GRAND TOTAL AMOUNT from this invoice.
 
-INVOICE TEXT:
+INVOICE CONTENT:
 ${invoiceText}
 
-Return your analysis as a JSON object.`);
+Respond ONLY with a JSON object containing the extracted fields and validation status.`);
 
     // Parse validation result
     let validationData: ValidationResult;
@@ -213,6 +211,14 @@ Return your analysis as a JSON object.`);
         const jsonMatch = content.match(/\{[\s\S]*\}/);
         if (jsonMatch) {
             validationData = JSON.parse(jsonMatch[0]);
+            // Ensure amount is a number
+            if (validationData.extracted_fields && validationData.extracted_fields.amount !== undefined) {
+                const amt = validationData.extracted_fields.amount as any;
+                if (typeof amt === 'string') {
+                    const cleaned = amt.replace(/,/g, '').match(/[0-9.]+/);
+                    validationData.extracted_fields.amount = cleaned ? parseFloat(cleaned[0]) : 0;
+                }
+            }
         } else {
             throw new Error('No JSON found in validation response');
         }
@@ -247,7 +253,7 @@ Return your analysis as a JSON object.`);
     console.log('✅ Validation complete:', validationData.is_valid);
 
     // If validation fails critically, return early
-    if (!validationData.is_valid && validationData.missing_mandatory_fields.length > 3) {
+    if (!validationData.is_valid && (validationData.missing_mandatory_fields?.length ?? 0) > 3) {
         const finalResult: FinalAnalysis = {
             invoice_id: `INV-${Date.now()}`,
             status: 'rejected',
@@ -263,7 +269,9 @@ Return your analysis as a JSON object.`);
             summary: `Invoice rejected due to missing mandatory fields: ${validationData.missing_mandatory_fields.join(', ')}`,
             processed_at: new Date().toISOString()
         };
+        await logInvoiceAction(finalResult);
         return finalResult;
+
     }
 
     console.log('📚 Step 2: Running Policy Compliance Agent...');
@@ -339,8 +347,10 @@ Search the knowledge base for relevant policies and analyze compliance. Return y
 
     console.log('✅ Analysis complete!');
 
+    await logInvoiceAction(finalResult);
     return finalResult;
 }
+
 
 // ============================================
 // HELPER FUNCTIONS
@@ -350,7 +360,6 @@ async function extractInvoiceText(file: File): Promise<string> {
     const fileType = file.type;
 
     if (fileType === 'application/pdf') {
-        // Use PDFLoader for PDFs
         const { PDFLoader } = await import('@langchain/community/document_loaders/fs/pdf');
         const { writeFile, unlink } = await import('fs/promises');
         const { join } = await import('path');
@@ -363,12 +372,22 @@ async function extractInvoiceText(file: File): Promise<string> {
         try {
             const loader = new PDFLoader(tempPath);
             const docs = await loader.load();
-            return docs.map(d => d.pageContent).join('\n\n');
+            let text = docs.map(d => d.pageContent).join('\n\n').trim();
+
+            // If text extraction is very poor, it might be a scanned PDF
+            if (text.length < 50) {
+                console.log('⚠️ PDF text extraction poor, attempting Vision rendering...');
+                return await extractPdfTextViaVision(buffer);
+            }
+
+            return text;
+        } catch (e) {
+            console.error('PDF Text Extraction failed:', e);
+            return await extractPdfTextViaVision(buffer);
         } finally {
             await unlink(tempPath).catch(() => { });
         }
     } else if (fileType.startsWith('image/')) {
-        // For images, use GPT-4 Vision directly
         const base64 = Buffer.from(await file.arrayBuffer()).toString('base64');
 
         const response = await openai.chat.completions.create({
@@ -377,7 +396,7 @@ async function extractInvoiceText(file: File): Promise<string> {
                 {
                     role: 'user',
                     content: [
-                        { type: 'text', text: 'Extract all text from this invoice image. Include every detail you can see.' },
+                        { type: 'text', text: 'Extract all text from this invoice image. Be extremely careful to find the Total Amount or Grand Total. List every number you see associated with "Total", "Net", or "Balance".' },
                         { type: 'image_url', image_url: { url: `data:${fileType};base64,${base64}` } }
                     ]
                 }
@@ -386,10 +405,51 @@ async function extractInvoiceText(file: File): Promise<string> {
         });
 
         return response.choices[0].message.content || '';
-    } else if (fileType === 'text/plain') {
-        return await file.text();
     } else {
-        throw new Error(`Unsupported file type: ${fileType}`);
+        return await file.text();
+    }
+}
+
+async function extractPdfTextViaVision(pdfBuffer: Buffer): Promise<string> {
+    try {
+        const pdfjs = await import('pdfjs-dist/legacy/build/pdf');
+        const { createCanvas } = await import('canvas');
+
+        const data = new Uint8Array(pdfBuffer);
+        const loadingTask = pdfjs.getDocument({ data });
+        const pdf = await loadingTask.promise;
+
+        // Just process the first page for the total
+        const page = await pdf.getPage(1);
+        const viewport = page.getViewport({ scale: 2.0 });
+        const canvas = createCanvas(viewport.width, viewport.height);
+        const context = canvas.getContext('2d');
+
+        await page.render({
+            canvasContext: context as any,
+            viewport: viewport
+        }).promise;
+
+        const base64Image = canvas.toBuffer('image/jpeg').toString('base64');
+
+        const response = await openai.chat.completions.create({
+            model: 'gpt-4o',
+            messages: [
+                {
+                    role: 'user',
+                    content: [
+                        { type: 'text', text: 'This is a scanned invoice PDF. Extract all text, focusing specifically on finding the GRAND TOTAL or TOTAL AMOUNT PAID.' },
+                        { type: 'image_url', image_url: { url: `data:image/jpeg;base64,${base64Image}` } }
+                    ]
+                }
+            ],
+            max_tokens: 2000
+        });
+
+        return response.choices[0].message.content || '';
+    } catch (e) {
+        console.error('PDF Vision Extraction failed:', e);
+        return 'Could not extract text from PDF';
     }
 }
 

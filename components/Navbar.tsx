@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Sun, Moon, Sparkles } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { cn } from "@/lib/utils";
@@ -12,10 +13,12 @@ export default function Navbar() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
-  
+
   // Theme transition state
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [targetTheme, setTargetTheme] = useState<string | null>(null);
+
+  const router = useRouter();
 
   useEffect(() => {
     setMounted(true);
@@ -32,6 +35,7 @@ export default function Navbar() {
     { name: "Features", href: "/features" },
     { name: "How it Works", href: "/how-it-works" },
     { name: "Pricing", href: "/pricing" },
+    { name: "Admin", href: "/admin/dashboard" },
   ];
 
   if (!mounted) return null;
@@ -52,9 +56,8 @@ export default function Navbar() {
               setTargetTheme(null);
             }, 50);
           }}
-          className={`fixed inset-0 z-[5] pointer-events-none ${
-            targetTheme === "dark" ? "bg-[#0a0a0a]" : "bg-white"
-          }`}
+          className={`fixed inset-0 z-[5] pointer-events-none ${targetTheme === "dark" ? "bg-[#0a0a0a]" : "bg-white"
+            }`}
         />
       )}
 
@@ -71,8 +74,8 @@ export default function Navbar() {
               <div className="p-1.5 rounded-lg bg-gradient-to-br from-blue-600 to-purple-600 text-white">
                 <Sparkles size={16} />
               </div>
-              <Link 
-                href="/" 
+              <Link
+                href="/"
                 className="text-lg font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-300"
               >
                 ExpenseAD
@@ -110,7 +113,7 @@ export default function Navbar() {
               >
                 {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
               </button>
-              <Link 
+              <Link
                 href="/anomaly-detector"
                 className="px-4 py-2 rounded-full bg-black dark:bg-white text-white dark:text-black text-sm font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-all hover:scale-105 active:scale-95"
               >
@@ -120,7 +123,7 @@ export default function Navbar() {
 
             {/* Mobile Menu Button */}
             <div className="flex md:hidden items-center gap-4">
-               <button
+              <button
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
                 className="p-2 rounded-full text-gray-600 dark:text-gray-300 hover:bg-gray-200/50 dark:hover:bg-white/10 transition-colors"
               >
@@ -159,7 +162,7 @@ export default function Navbar() {
                 </Link>
               ))}
               <div className="pt-2 border-t border-gray-200 dark:border-gray-800 mt-2">
-                <Link 
+                <Link
                   href="/anomaly-detector"
                   onClick={() => setIsOpen(false)}
                   className="block w-full py-3 rounded-xl bg-black dark:bg-white text-white dark:text-black font-medium hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors text-center"

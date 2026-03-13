@@ -63,7 +63,7 @@ export default function Hero() {
               <ArrowRight className="relative z-10 h-4 w-4 transition-transform group-hover:translate-x-1" />
               <div className="absolute inset-0 -z-0 bg-gradient-to-r from-purple-600 to-blue-600 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
             </Link>
-            <Link 
+            <Link
               href="/how-it-works"
               className="inline-flex h-12 items-center justify-center rounded-full border border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-900/50 px-8 font-medium text-gray-700 dark:text-gray-300 backdrop-blur-sm transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-black dark:hover:text-white focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 focus:ring-offset-slate-900"
             >

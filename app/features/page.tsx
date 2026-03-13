@@ -97,12 +97,20 @@ export default function FeaturesPage() {
             borderColor: "border-teal-500/20 dark:border-teal-500/30"
         },
         {
-            icon: Cpu,
-            title: "Batch Processing",
-            description: "Process hundreds of invoices simultaneously with our powerful batch analysis engine.",
-            color: "from-yellow-500 to-orange-500",
-            bgColor: "bg-yellow-500/10 dark:bg-yellow-500/20",
-            borderColor: "border-yellow-500/20 dark:border-yellow-500/30"
+            icon: ShieldCheck,
+            title: "Secure Auditor Hub",
+            description: "Dedicated admin portal for auditors to review detailed extraction results, policy violations, and download Excel logs.",
+            color: "from-blue-600 to-indigo-600",
+            bgColor: "bg-blue-600/10 dark:bg-blue-600/20",
+            borderColor: "border-blue-600/20 dark:border-blue-600/30"
+        },
+        {
+            icon: Database,
+            title: "Automated Excel Logging",
+            description: "Every analyzed invoice is instantly logged into a structured Excel database for offline auditing and record keeping.",
+            color: "from-emerald-500 to-teal-500",
+            bgColor: "bg-emerald-500/10 dark:bg-emerald-500/20",
+            borderColor: "border-emerald-500/20 dark:border-emerald-500/30"
         }
     ];
 
