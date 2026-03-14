@@ -20,36 +20,32 @@ For an invoice to be successfully processed, it must contain the following manda
 
 ---
 
-## 🤖 The Agentic Flow (How it Works)
+## ⛓️ Step-by-Step PDF Audit Journey
 
-The system utilizes an **Orchestrated Multi-Agent Architecture** powered by the OpenAI Agents SDK, LangChain, and Vector Embeddings.
+When a user uploads a PDF invoice, the following agentic chain is triggered:
 
-### 1. Advanced Document Processing (LangChain)
-When a user uploads a file, the system uses **LangChain's PDFLoader** for structured text extraction. 
-> **Recursive Vision Fallback**: If the PDF is a scan (missing text layer), the system automatically renders it into high-resolution images and uses **Vision-based OCR** to see the invoice just like a human would.
+### 1. The Multi-Modal Extraction Phase
+- **Text Layer Check**: The system first attempts to "read" the PDF using **LangChain's PDFLoader**.
+- **The Vision Fallback**: If the PDF is a scanned image with no text layer, the **Validation Agent** automatically triggers a multi-modal fallback. It renders the PDF pages into high-resolution images and uses **GPT-4o Vision** to "see" and OCR the content.
 
-### 2. The Validation Agent (Accuracy Guard)
-- **Role**: Data Extraction & Structural Validation.
-- **Workflow**: 
-    - Scans for mandatory fields (Merchant, Date, Grand Total).
-    - Specifically hunts for the **Net Payable** amount to handle complex multi-tax invoices.
-    - Uses structured parsing to ensure data integrity.
+### 2. Validation Agent Execution
+- **Handover**: The raw text (from either OCR or direct extraction) is handed to the **Validation Agent**.
+- **Reasoning**: The agent analyzes the text against the **7 Mandatory Parameters**. It doesn't just look for keywords; it understands the context (e.g., distinguishing between a Billing Address and a Merchant Address).
+- **Result**: Generates a structured JSON object. If critical data like "Grand Total" is missing, it flags the invoice immediately.
 
-### 3. Semantic Policy Search (Vector Embeddings & RAG)
-The system implements a **Retrieval-Augmented Generation (RAG)** pattern:
-- **Embeddings**: Uses OpenAI's `text-embedding-3-small` to convert policy documents and search queries into high-dimensional vector space.
-- **Semantic Search**: Performs vector similarity search in Supabase to find exact company policies relevant to the specific invoice category and amount.
+### 3. Semantic Retrieval (RAG)
+- **Context Injection**: The extracted merchant name, invoice type, and amount are used to generate a **Vector Embedding**.
+- **Discovery**: The system performs a semantic search in the **Supabase Knowledge Base** to find relevant company policies that apply *specifically* to this type of expense.
 
-### 4. The Policy Compliance Agent (Rule Enforcer)
-- **Role**: Policy Verification & Risk Assessment.
-- **Workflow**: 
-    - Cross-references extracted data against the semantically retrieved policy sections.
-    - Generates specific violations (e.g., "Meal limit exceeded", "Missing GST details").
-    - Assigns a numeric Risk Score (0-100).
+### 4. Policy Compliance Agent Execution
+- **Handover**: The Validation Agent's data + the retrieved Policy sections are handed to the **Policy Compliance Agent**.
+- **Analysis**: This agent acts as a "Legal Auditor." It cross-checks the invoice amount against policy limits (e.g., "Meal allowance is ₹1000") and checks for compliance with GST/Tax rules.
+- **Risk Scoring**: It calculates an overall **Risk Score** based on violations and confidence.
 
-### 5. The Logging & Analytics Layer
-- **Excel Synchronization**: Every result is instantly pushed to a structured Excel database (`invoice_logs.xlsx`).
-- **Audit Dashboard**: Fetches real-time data from the logs to provide interactive analytics and expandable deep-dives.
+### 5. Final Synthesis & Persistence
+- **Decision Engine**: The results are combined into a **Final Analysis** report.
+- **Database Update**: The **Excel Agent** (lib/excel) instantly appends the data to `invoice_logs.xlsx`.
+- **UI Update**: The Admin Dashboard reflects the new entry within seconds, allowing auditors to expand the record and see the "Full AI Reasoning" behind the approval or rejection.
 
 ---
 
